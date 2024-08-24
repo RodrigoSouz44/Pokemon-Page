@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Descubra seu POKEMON!</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .pokemon-info {
+      margin-top: 20px;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .pokemon-info img {
+      max-width: 100px;
+    }
+
+    .pokemon-info h2 {
+      margin-top: 0;
+    }
+
+    .user-info {
+      margin-bottom: 20px;
+    }
+
+    .user-info img {
+      max-width: 100px;
+      border-radius: 50%;
+      margin-top: 10px;
+    }
+
+    /* Estilo para o botão de sair fixo na parte inferior */
+    .button {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 20px;
+      background-color: #007BFF;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bem-vindo à Página Inicial</h1>
+        <p>Informações do Usuário:</p>
+        <div class="user-info">
+            <img id="user-picture" src="" alt="Foto do Usuário">
+            <ul>
+                <li>Email: <span id="user-email">Carregando...</span></li>
+                <li>Nome: <span id="user-name">Carregando...</span></li>
+            </ul>
+        </div>
+        
+        <div class="pokemon-info" id="pokemon-info">
+            <h2>O seu Pokemon escolhido foi:</h2>
+            <p>Nome: <span id="pokemon-name">Carregando...</span></p>
+            <p>Tipo: <span id="pokemon-type">Carregando...</span></p>
+            <img id="pokemon-image" src="" alt="Imagem do Pokémon">
+        </div>
+        
+        <a href="index.html" class="button">Sair</a>
+    </div>
+
+    <script>
+      // Função para buscar um Pokémon aleatório
+      async function fetchRandomPokemon() {
+        const randomId = Math.floor(Math.random() * 898) + 1; // PokeAPI tem 898 Pokémon
+        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${randomId}/`);
+        const data = await response.json();
+
+        // Atualiza a página com as informações do Pokémon
+        document.getElementById('pokemon-name').textContent = data.name.charAt(0).toUpperCase() + data.name.slice(1);
+        document.getElementById('pokemon-type').textContent = data.types.map(typeInfo => typeInfo.type.name).join(', ');
+        document.getElementById('pokemon-image').src = data.sprites.front_default;
+        document.getElementById('pokemon-image').alt = data.name;
+      }
+
+      // Função para buscar um usuário aleatório
+      async function fetchRandomUser() {
+        const response = await fetch('https://randomuser.me/api/');
+        const data = await response.json();
+        const user = data.results[0];
+
+        // Atualiza a página com as informações do usuário
+        document.getElementById('user-name').textContent = `${user.name.first} ${user.name.last}`;
+        document.getElementById('user-email').textContent = user.email;
+        document.getElementById('user-picture').src = user.picture.large;
+        document.getElementById('user-picture').alt = `${user.name.first} ${user.name.last}`;
+      }
+
+      // Chama as funções ao carregar a página
+      window.onload = function() {
+        fetchRandomPokemon();
+        fetchRandomUser();
+      };
+    </script>
+</body>
+</html>
